@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 
 from inicio import Inicio
 from agregar import Agregar
+from eliminar import Eliminar
 
 class Ventana(QWidget):
     def __init__(self):
@@ -19,8 +20,10 @@ class Ventana(QWidget):
         self.option={
             "current":"inicio"
         } 
+
         self.start_window = Inicio()
         self.agregar_window= Agregar()
+        self.eliminar_window= Eliminar()
         self.msj = QMessageBox()
         self.menu_bar = QMenuBar(self)
         
@@ -74,16 +77,20 @@ class Ventana(QWidget):
         sys.exit()
     
     def agregar(self):
-        if self.option["current"] == "inicio":
+        if self.option["current"] == "inicio" or self.option["current"] == "eliminar":
             self.layout_.removeWidget(self.start_window)
             self.start_window.deleteLater()
             self.option["current"] = "agregar"
-            self.layout_.addWidget(self.agregar_window)
+            self.layout_.addWidget(self.agregar_window)  
+            
 
-        
-  
     def eliminar(self):
-        print("eliminar")
+        if self.option["current"] == "agregar":
+            self.layout_.removeWidget(self.agregar_window)
+            self.agregar_window.deleteLater()
+            self.option["current"] = "eliminar"
+            self.layout_.addWidget(self.eliminar_window)
+        
 
    
 if __name__ == "__main__":
