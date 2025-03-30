@@ -6,6 +6,7 @@ from PyQt6.QtCore import Qt
 from inicio import Inicio
 from agregar import Agregar
 from eliminar import Eliminar
+from actualizar import Actualizar
 
 class Ventana(QWidget):
     def __init__(self):
@@ -23,7 +24,8 @@ class Ventana(QWidget):
             ]
         self.start_window = Inicio(self)
         self.eliminar_window =  Eliminar(self)
-        self.agregar_window = Agregar()
+        self.agregar_window = Agregar(self)
+        self.agregar_window = Actualizar(self)
         self.option={
             "current":"inicio",
             "ventana":self.start_window
@@ -65,17 +67,20 @@ class Ventana(QWidget):
         eliminar_action = QAction("Eliminar",self)
         salir_action = QAction("Salir",self)
         inicio_action = QAction("Inicio",self)
+        actualizar_action = QAction("Actualizar",self)
 
         # conectando los acctiones
         inicio_action.triggered.connect(self.inicio)
         agregar_action.triggered.connect(self.agregar)
         eliminar_action.triggered.connect(self.eliminar)
-        salir_action.triggered.connect(self.salir)        
+        salir_action.triggered.connect(self.salir) 
+        actualizar_action.triggered.connect(self.actualizar)       
 
         #agregarla acction al menu
         file_menu.addAction(inicio_action)
         file_menu.addAction(agregar_action)
         file_menu.addAction(eliminar_action)
+        file_menu.addAction(actualizar_action)
         file_menu.addAction(salir_action)
         
     def salir(self):
@@ -98,6 +103,11 @@ class Ventana(QWidget):
         self.crear_windows() 
         self.layout_.addWidget(self.start_window)
 
+    def actualizar(self):
+        self.option["current"] = "actualizar"
+        self.crear_windows() 
+        self.layout_.addWidget(self.actualizar_window)
+
     def crear_windows(self):
         if self.option["current"] == "eliminar" :
             self.layout_.removeWidget(self.option["ventana"])
@@ -114,8 +124,14 @@ class Ventana(QWidget):
         elif self.option["current"] == "agregar" :
             self.layout_.removeWidget(self.option["ventana"])
             self.option["ventana"].deleteLater()  
-            self.agregar_window= Agregar()
+            self.agregar_window= Agregar(self)
             self.option["ventana"]=self.agregar_window
+        elif self.option["current"] == "actualizar" :
+            self.layout_.removeWidget(self.option["ventana"])
+            self.option["ventana"].deleteLater()  
+            self.actualizar_window= Actualizar(self)
+            self.option["ventana"]=self.actualizar_window
+        
 
 
 if __name__ == "__main__":
