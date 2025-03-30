@@ -1,3 +1,6 @@
+## this project was create by Richie Otero and Moises Zabala
+## on 2025
+
 from PyQt6.QtWidgets import  QWidget,QLabel,QVBoxLayout,QHBoxLayout,QLineEdit,QPushButton,QTableWidget,QTableWidgetItem,QMessageBox
 from PyQt6.QtCore import Qt
 
