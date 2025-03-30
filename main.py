@@ -3,7 +3,6 @@ from PyQt6.QtWidgets import  QApplication,QWidget,QLabel,QVBoxLayout,QMessageBox
 from PyQt6.QtGui import QAction,QPixmap,QIcon
 from PyQt6.QtCore import Qt
 
-
 from inicio import Inicio
 from agregar import Agregar
 from eliminar import Eliminar
@@ -17,19 +16,24 @@ class Ventana(QWidget):
         self.setFixedSize(self.width, self.height)
         self.setWindowIcon(QIcon("./src/img/favicon.ico"))
         self.setWindowTitle("Seguros atlanta")
+        self.valores = [
+            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-9","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"},
+            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-5","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"},
+            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-9","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"}
+            ]
+        self.start_window = Inicio(self)
+        self.eliminar_window =  Eliminar(self)
+        self.agregar_window = Agregar()
         self.option={
-            "current":"inicio"
+            "current":"inicio",
+            "ventana":self.start_window
         } 
 
-        self.start_window = Inicio()
-        self.agregar_window= Agregar()
-        self.eliminar_window= Eliminar()
         self.msj = QMessageBox()
         self.menu_bar = QMenuBar(self)
         
        #pixmap
         pixmap = QPixmap("./src/img/logo.png")
-
 
         #layaout
         self.layout_ = QVBoxLayout()
@@ -60,15 +64,16 @@ class Ventana(QWidget):
         agregar_action = QAction("Agregar",self)
         eliminar_action = QAction("Eliminar",self)
         salir_action = QAction("Salir",self)
-        inicio = QAction("Inicio",self)
+        inicio_action = QAction("Inicio",self)
 
         # conectando los acctiones
+        inicio_action.triggered.connect(self.inicio)
         agregar_action.triggered.connect(self.agregar)
         eliminar_action.triggered.connect(self.eliminar)
-        salir_action.triggered.connect(self.salir)
-        
+        salir_action.triggered.connect(self.salir)        
 
         #agregarla acction al menu
+        file_menu.addAction(inicio_action)
         file_menu.addAction(agregar_action)
         file_menu.addAction(eliminar_action)
         file_menu.addAction(salir_action)
@@ -77,22 +82,42 @@ class Ventana(QWidget):
         sys.exit()
     
     def agregar(self):
-        if self.option["current"] == "inicio" or self.option["current"] == "eliminar":
-            self.layout_.removeWidget(self.start_window)
-            self.start_window.deleteLater()
-            self.option["current"] = "agregar"
-            self.layout_.addWidget(self.agregar_window)  
-            
+
+        self.option["current"] = "agregar"
+        self.crear_windows()
+        self.layout_.addWidget(self.agregar_window)
 
     def eliminar(self):
-        if self.option["current"] == "agregar":
-            self.layout_.removeWidget(self.agregar_window)
-            self.agregar_window.deleteLater()
-            self.option["current"] = "eliminar"
-            self.layout_.addWidget(self.eliminar_window)
-        
+       
+        self.option["current"] = "eliminar"
+        self.crear_windows() 
+        self.layout_.addWidget(self.eliminar_window)
 
-   
+    def inicio(self):
+        self.option["current"] = "inicio"
+        self.crear_windows() 
+        self.layout_.addWidget(self.start_window)
+
+    def crear_windows(self):
+        if self.option["current"] == "eliminar" :
+            self.layout_.removeWidget(self.option["ventana"])
+            self.option["ventana"].deleteLater()  
+            self.eliminar_window= Eliminar(self)
+            self.option["ventana"]=self.eliminar_window
+
+        elif self.option["current"] == "inicio" :
+            self.layout_.removeWidget(self.option["ventana"])
+            self.option["ventana"].deleteLater()  
+            self.start_window = Inicio(self)
+            self.option["ventana"]=self.start_window
+
+        elif self.option["current"] == "agregar" :
+            self.layout_.removeWidget(self.option["ventana"])
+            self.option["ventana"].deleteLater()  
+            self.agregar_window= Agregar()
+            self.option["ventana"]=self.agregar_window
+
+
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 

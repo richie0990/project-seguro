@@ -2,28 +2,23 @@ from PyQt6.QtWidgets import  QWidget,QLabel,QVBoxLayout,QHBoxLayout,QLineEdit,QP
 from PyQt6.QtCore import Qt
 
 class Inicio(QWidget):
-    def __init__(self):
+    def __init__(self,padre):
         super().__init__()
         self.width=1000
         self.height=500
         self.setGeometry(10,200,self.width,self.height)
-
+        self.padre = padre
         #variables
         self.y_buscador = 300
         self.msj =QMessageBox()
         layout = QVBoxLayout()
         div_buscador= QHBoxLayout()
-
+        
         #array fixticio
-        self.valores =[
-            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-9","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"},
-            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-5","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"},
-            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-9","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"}
-            ]
+        self.valores = self.padre.valores
         
         #crear label
-        label_width= 100
-        label_height=30
+
         label = QLabel("buscador:",self)
         label.setStyleSheet("font-size: 20px; color: blue; text-align:") 
         label.setAlignment(Qt.AlignmentFlag.AlignRight)
@@ -32,7 +27,7 @@ class Inicio(QWidget):
         input_width=200
         input_height=35
         self.buscador_input = QLineEdit(self)
-        self.buscador_input.setPlaceholderText("Introdusca el DNI o el mes")
+        self.buscador_input.setPlaceholderText("Introdusca el DNI")
         self.buscador_input.setGeometry(int(self.width/2)+100,self.y_buscador,input_width,input_height)
         self.buscador_input.setStyleSheet("font-size:15px;")    
         self.buscador_input.setFixedWidth(input_width)    
@@ -56,7 +51,6 @@ class Inicio(QWidget):
         #cargar datos
         self.actulizar()
 
-        
         div_buscador.addWidget(label)
         div_buscador.addWidget(self.buscador_input)
         div_buscador.addWidget(button)
@@ -70,7 +64,6 @@ class Inicio(QWidget):
         button_actualizar.clicked.connect(self.actulizar)
 
     def buscar(self):
-            
         input = self.buscador_input.text()
         if input == "" :
             self.msj.setText("Debes de rellenar el campo")
@@ -86,12 +79,14 @@ class Inicio(QWidget):
                 poliza = self.valores[i]
             elif valor["fecha de inicio"] == input:
                 poliza= self.valores[i]
+
         if poliza == False:
             self.msj.setText("No se pudo encontrar dicha poliza")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.setWindowTitle("Seguros atlanta")
             self.msj.exec()
             return
+        
         self.table.clearContents() 
         self.table.setRowCount(1)
         self.table.setItem(0,0,QTableWidgetItem(poliza["nombre"]))

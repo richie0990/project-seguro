@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout,QLabel,QLineEdit,QHBoxLayout,QPushButton
 from PyQt6.QtCore import Qt
+
 class Agregar(QWidget):
     def __init__(self):
         super().__init__()
@@ -13,7 +14,6 @@ class Agregar(QWidget):
         self.layout_6 = QHBoxLayout()
         self.layout_7 = QHBoxLayout()
         
-
         #variables
         titulo = QLabel("Agregar Seguro",self)
         titulo.setStyleSheet("font-size:25px;")
@@ -22,7 +22,6 @@ class Agregar(QWidget):
         button=QPushButton("Aceptar",self)
         button.setFixedSize(100,40)
         button.setStyleSheet("font-size:15px")
-        
         
         #labels
         label_nombre_apellido   =QLabel("Nombre y apellido:",self)
@@ -56,6 +55,7 @@ input_fecha_inicio  ,
 input_fecha_vencimiento, 
 input_no_poliza         
 ]
+        
         #for labels
         for element in self.labels:
             element.setStyleSheet("font-size:15px;")

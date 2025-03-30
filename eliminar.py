@@ -1,14 +1,109 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout,QLabel,QLineEdit,QHBoxLayout,QPushButton
+from PyQt6.QtWidgets import QWidget, QVBoxLayout,QLabel,QLineEdit,QHBoxLayout,QPushButton,QTableWidget,QMessageBox,QTableWidgetItem
 from PyQt6.QtCore import Qt
 
 class Eliminar(QWidget):
-    def __init__(self):
+    def __init__(self,padre):
         super().__init__()
-        self.setGeometry(0,0,500,300)        
-
+        self.width = 1004
+        self.height = 300
+        self.setGeometry(0,0,self.width,self.height)        
+        self.layout_ = QVBoxLayout(self)
+        self.layout_buscador = QHBoxLayout(self)
+        self.layout_tabla =  QVBoxLayout(self)
+        self.msj = QMessageBox(self)
+        self.padre = padre
+        self.poliza = None
+        
         #variables
         titulo = QLabel("Eliminar Seguro",self)
         titulo.setStyleSheet("font-size:25px;")
-        titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-     
+        buscardo_label = QLabel("Buscador",self)
+        self.buscardo_input = QLineEdit(self)
+        buscardo_button = QPushButton("Buscar",self)
+        eliminar_button = QPushButton("Eliminar",self)
+        eliminar_button.setFixedSize(130,80)
+        eliminar_button.setStyleSheet("font-size:15px")
+        self.buscardo_input.setFixedSize(250,35)
+        self.buscardo_input.setPlaceholderText("Introdusca el DNI")
+        buscardo_button.setFixedSize(60,35)
+        buscardo_label.setStyleSheet("font-size:15px")
+
+        
+        self.layout_buscador.addWidget(buscardo_label)
+        self.layout_buscador.addWidget(self.buscardo_input)
+        self.layout_buscador.addWidget(buscardo_button)
+        self.layout_buscador.setAlignment(buscardo_label,Qt.AlignmentFlag.AlignRight)
+      
+        self.layout_.addWidget(titulo)
+        self.layout_.addLayout(self.layout_buscador)
+        self.layout_.setAlignment(titulo,Qt.AlignmentFlag.AlignCenter)
+        self.table = QTableWidget(self)
+        self.table.setStyleSheet("font-size:15px")
+        self.table.setColumnCount(7)
+        self.table.setRowCount(0)
+        self.table.setHorizontalHeaderLabels(["Nombre","Fecha de Nac.","Cedula","Telefono","Fecha de inicio","Fecha de Venc.","No. poliza"])
+        self.table.setColumnWidth(0, int((self.width+15)/7))
+        self.table.setColumnWidth(1, int((self.width+15)/7))
+        self.table.setColumnWidth(2, int((self.width+15)/7))
+        self.table.setColumnWidth(3, int((self.width+15)/7))
+        self.table.setColumnWidth(4, int((self.width+15)/7))
+        self.table.setColumnWidth(5, int((self.width+15)/7))
+        self.table.setColumnWidth(6, int((self.width+15)/7))
+        self.layout_.addWidget(self.table)
+        self.layout_.addWidget(eliminar_button)
+        self.layout_.setAlignment(eliminar_button,Qt.AlignmentFlag.AlignCenter)
+        self.setLayout(self.layout_)
+
+        #conect btn
+        buscardo_button.clicked.connect(self.buscar)
+        eliminar_button.clicked.connect(self.eliminar)
+        
+    def buscar(self):
+        value = self.buscardo_input.text()
+        if value == "":
+            self.msj.setText("No se encontro dicha poliza")
+            self.msj.setWindowTitle("Error")
+            self.msj.setIcon(QMessageBox.Icon.Critical)
+            self.msj.exec()
+        for i,element in enumerate(self.padre.valores):
+            if element['cedula'] == value:
+                poliza = [i,element]
+        if poliza == False:
+            self.msj.setText("No se encontro dicha poliza")
+            self.msj.setWindowTitle("Error")
+            self.msj.setIcon(QMessageBox.Icon.Critical)
+            self.msj.exec()
+            return
+        self.table.setRowCount(1)
+        self.table.setItem(0,0,QTableWidgetItem(poliza[1]["nombre"]))
+        self.table.setItem(0,1,QTableWidgetItem(poliza[1]["fecha de nac."]))
+        self.table.setItem(0,2,QTableWidgetItem(poliza[1]["cedula"]))
+        self.table.setItem(0,3,QTableWidgetItem(poliza[1]["telefono"]))
+        self.table.setItem(0,4,QTableWidgetItem(poliza[1]["fecha de inicio"]))
+        self.table.setItem(0,5,QTableWidgetItem(poliza[1]["fecha de venc."]))
+        self.table.setItem(0,6,QTableWidgetItem(poliza[1]["no. poliza"]))
+        self.poliza =poliza
+    def eliminar(self):
+            if self.poliza == None:
+                self.msj.setText("Busque una poliza para eliminar")
+                self.msj.setWindowTitle("Error")
+                self.msj.setIcon(QMessageBox.Icon.Critical)
+                self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
+                self.msj.exec()
+                return
+            self.msj.setText("quieres eliminar esta poliza?")
+            self.msj.setWindowTitle("Info")
+            self.msj.setIcon(QMessageBox.Icon.Information)
+            self.msj.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel )
+            respuesta = self.msj.exec()
+            if respuesta == QMessageBox.StandardButton.Cancel:
+                 return
+            del self.padre.valores[self.poliza[0]]
+            self.table.setRowCount(0)
+            self.msj.setText("Eliminado correctamente")
+            self.msj.setWindowTitle("Ok")
+            self.msj.setIcon(QMessageBox.Icon.NoIcon)
+            self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
+            self.msj.exec()
+            self.poliza =None
