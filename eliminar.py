@@ -21,13 +21,34 @@ class Eliminar(QWidget):
         buscardo_label = QLabel("Buscador",self)
         self.buscardo_input = QLineEdit(self)
         buscardo_button = QPushButton("Buscar",self)
+        buscardo_button.setCursor(Qt.CursorShape.PointingHandCursor)
+        buscardo_button.setStyleSheet('''
+            QPushButton{
+                        font-size:15px;
+                        background-color:blue;
+                        color:#f1f1f1;
+                                      }
+            QPushButton:hover{
+                                      color:black;
+                                      }
+''')
         eliminar_button = QPushButton("Eliminar",self)
         eliminar_button.setFixedSize(130,80)
-        eliminar_button.setStyleSheet("font-size:15px")
+        eliminar_button.setStyleSheet('''
+            QPushButton{
+                        font-size:15px;
+                        background-color:blue;
+                        color:#f1f1f1;
+                                      }
+            QPushButton:hover{
+                                      color:black;
+                                      }
+''')
+        eliminar_button.setCursor(Qt.CursorShape.PointingHandCursor)
         self.buscardo_input.setFixedSize(250,35)
-        self.buscardo_input.setPlaceholderText("Introdusca el DNI")
+        self.buscardo_input.setPlaceholderText("Introduzca el DNI")
         buscardo_button.setFixedSize(60,35)
-        buscardo_label.setStyleSheet("font-size:15px")
+        buscardo_label.setStyleSheet("font-size:15px;color:blue;")
 
         
         self.layout_buscador.addWidget(buscardo_label)
@@ -42,7 +63,7 @@ class Eliminar(QWidget):
         self.table.setStyleSheet("font-size:15px")
         self.table.setColumnCount(7)
         self.table.setRowCount(0)
-        self.table.setHorizontalHeaderLabels(["Nombre","Fecha de Nac.","Cedula","Telefono","Fecha de inicio","Fecha de Venc.","No. poliza"])
+        self.table.setHorizontalHeaderLabels(self.padre.heads)
         self.table.setColumnWidth(0, int((self.width+15)/7))
         self.table.setColumnWidth(1, int((self.width+15)/7))
         self.table.setColumnWidth(2, int((self.width+15)/7))
@@ -62,7 +83,7 @@ class Eliminar(QWidget):
     def buscar(self):
         value = self.buscardo_input.text()
         if value == "":
-            self.msj.setText("No se encontro dicha poliza")
+            self.msj.setText("No se encontró dicha póliza")
             self.msj.setWindowTitle("Error")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.exec()
@@ -73,7 +94,7 @@ class Eliminar(QWidget):
                 poliza = [i,element]
             
         if poliza == False:
-            self.msj.setText("No se encontro dicha poliza")
+            self.msj.setText("No se encontró dicha póliza")
             self.msj.setWindowTitle("Error")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.exec()
@@ -87,15 +108,16 @@ class Eliminar(QWidget):
         self.table.setItem(0,5,QTableWidgetItem(poliza[1][self.padre.heads[5]]))
         self.table.setItem(0,6,QTableWidgetItem(poliza[1][self.padre.heads[6]]))
         self.poliza =poliza
+        
     def eliminar(self):
             if self.poliza == None:
-                self.msj.setText("Busque una poliza para eliminar")
+                self.msj.setText("Busque una póliza para eliminar")
                 self.msj.setWindowTitle("Error")
                 self.msj.setIcon(QMessageBox.Icon.Critical)
                 self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
                 self.msj.exec()
                 return
-            self.msj.setText("quieres eliminar esta poliza?")
+            self.msj.setText("Quieres eliminar esta póliza?")
             self.msj.setWindowTitle("Info")
             self.msj.setIcon(QMessageBox.Icon.Information)
             self.msj.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel )

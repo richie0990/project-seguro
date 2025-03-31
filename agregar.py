@@ -1,5 +1,6 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout,QLabel,QLineEdit,QHBoxLayout,QPushButton,QMessageBox
 from PyQt6.QtCore import Qt
+import re 
 
 class Agregar(QWidget):
     def __init__(self,padre):
@@ -13,6 +14,7 @@ class Agregar(QWidget):
         self.layout_5 = QHBoxLayout()
         self.layout_6 = QHBoxLayout()
         self.layout_7 = QHBoxLayout()
+
         self.msj = QMessageBox(self)
         self.padre = padre
         
@@ -22,8 +24,18 @@ class Agregar(QWidget):
         titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         button=QPushButton("Aceptar",self)
-        button.setFixedSize(100,40)
-        button.setStyleSheet("font-size:15px")
+        button.setFixedSize(125,55)
+        button.setStyleSheet('''
+            QPushButton{
+                        font-size:15px;
+                        background-color:blue;
+                        color:#f1f1f1;
+                                      }
+            QPushButton:hover{
+                                      color:black;
+                                      }
+''')
+        button
         
         #labels
         label_nombre_apellido   =QLabel(self.padre.heads[0]+":",self)
@@ -107,22 +119,60 @@ input_no_poliza
         self.layout_.addWidget(button)
         self.layout_.setAlignment(button,Qt.AlignmentFlag.AlignCenter)
         self.setLayout(self.layout_)
+
         #agregar evento al button
         button.clicked.connect(self.agregar)
+
     def  agregar(self):
+        
+        re_fechas =r'^\d{2}/\d{2}/\d{4}$'
+        re_cedula = r'^\d{3}-\d{7}-\d{1}$'
+        re_telefono = r'^\d{3}-\d{3}-\d{4}$'
+
+        regex = True
         bandera=False
         obj={}
-        keys = list(self.padre.valores[0].keys())
+        
+        keys = self.padre.heads
         
         for i,input in enumerate(self.inputs):
             if input.text() == "":
                 bandera=True
             obj[keys[i]] = input.text()
+        for i,value in enumerate(list(obj.values())):
+                if i == 1:
+                    if not re.match(re_fechas,value):
+                        regex = False 
+                        self.inputs[i].setFocus()   
+                elif i == 2:
+                    if not re.match(re_cedula,value):
+                        regex = False 
+                        self.inputs[i].setFocus()    
+                elif i == 3:
+                    if not re.match(re_telefono,value):
+                        regex = False  
+                        self.inputs[i].setFocus()   
+                elif i == 4:
+                    if not re.match(re_fechas,value):
+                        regex = False
+                        self.inputs[i].setFocus() 
+                elif i == 5:
+                    if not re.match(re_fechas,value):
+                        regex = False
+                        self.inputs[i].setFocus() 
+                if not regex:
+                    self.msj.setWindowTitle("Error")
+                    self.msj.setIcon(QMessageBox.Icon.Critical)
+                    self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
+                    self.msj.setText("Complete correctamente este campo")
+                    self.msj.exec()
+                    return
+
         if bandera == True:
             self.msj.setWindowTitle("Error")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
-            self.msj.setText("Porfavor complete los campos")
+            self.msj.setText("Por favor complete los campos")
             self.msj.exec()
             return
         exits =False
@@ -131,7 +181,7 @@ input_no_poliza
                 exits =True
         if exits == True:
             self.msj.setWindowTitle("Error")
-            self.msj.setText("Poliza ya existente revisa el DNI o el numero de poliza")
+            self.msj.setText("Póliza ya existente, revisa el DNI o el número de póliza")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
             self.msj.exec()
@@ -141,7 +191,7 @@ input_no_poliza
         for input in self.inputs:
             input.setText("")
         self.msj.setWindowTitle("Ok")
-        self.msj.setText("Agregado con exito")
+        self.msj.setText("Agregado con éxito")
         self.msj.setIcon(QMessageBox.Icon.NoIcon)
         self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
         self.msj.exec()

@@ -3,20 +3,19 @@ from PyQt6.QtWidgets import  QApplication,QWidget,QLabel,QVBoxLayout,QMessageBox
 from PyQt6.QtGui import QAction,QPixmap,QIcon
 from PyQt6.QtCore import Qt
 from docx import Document
-from docx.oxml import OxmlElement
-import os
 from inicio import Inicio
 from agregar import Agregar
 from eliminar import Eliminar
 from actualizar import Actualizar
 
+
 doc = Document("./src/seguros.docx")
 data = []
 heads = []
+
 for tabla in doc.tables:
     for d,fila in enumerate(tabla.rows):
         obj ={}
-        index=0
         datos=False
         for i,celda in enumerate(fila.cells):
             if d == 0:
@@ -36,7 +35,7 @@ class Ventana(QWidget):
         self.setGeometry(0,100,self.width,self.height)
         self.setFixedSize(self.width, self.height)
         self.setWindowIcon(QIcon("./src/img/favicon.ico"))
-        self.setWindowTitle("Seguros atlanta")
+        self.setWindowTitle("Seguros Atlanta")
         self.heads = heads
         self.valores = data
         self.start_window = Inicio(self)
@@ -149,6 +148,7 @@ class Ventana(QWidget):
             self.actualizar_window= Actualizar(self)
             self.option["ventana"]=self.actualizar_window
         
+        
     def save(self,data):
         tables = doc.tables
         if tables:
@@ -165,8 +165,7 @@ class Ventana(QWidget):
         # Guardar el documento
         doc.save("./src/seguros.docx")
         #solo hay que poner donde el quiere que se guarde la informacion 
-        #doc.save(os.)
-
+        
     def convert_to_docx(self):
         converted_data=[self.heads]
         for valor in self.valores:

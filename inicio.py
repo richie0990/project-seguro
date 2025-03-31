@@ -11,6 +11,7 @@ class Inicio(QWidget):
         self.height=500
         self.setGeometry(10,200,self.width,self.height)
         self.padre = padre
+
         #variables
         self.y_buscador = 300
         self.msj =QMessageBox()
@@ -21,8 +22,7 @@ class Inicio(QWidget):
         self.valores = self.padre.valores
         
         #crear label
-
-        label = QLabel("buscador:",self)
+        label = QLabel("Buscador:",self)
         label.setStyleSheet("font-size: 20px; color: blue; text-align:") 
         label.setAlignment(Qt.AlignmentFlag.AlignRight)
 
@@ -30,7 +30,7 @@ class Inicio(QWidget):
         input_width=200
         input_height=35
         self.buscador_input = QLineEdit(self)
-        self.buscador_input.setPlaceholderText("Introdusca el DNI")
+        self.buscador_input.setPlaceholderText("Introduzca el DNI")
         self.buscador_input.setGeometry(int(self.width/2)+100,self.y_buscador,input_width,input_height)
         self.buscador_input.setStyleSheet("font-size:15px;")    
         self.buscador_input.setFixedWidth(input_width)    
@@ -38,14 +38,34 @@ class Inicio(QWidget):
         #button
         button= QPushButton("Ok",self)
         button.setGeometry(int(self.width/2),self.y_buscador,60,35)
-        button.setStyleSheet("font-size:15px;")
+        button.setStyleSheet('''
+            QPushButton{
+                        font-size:15px;
+                        background-color:blue;
+                        color:#f1f1f1;
+                                      }
+            QPushButton:hover{
+                                      color:black;
+                                      }
+''')
         button.setFixedWidth(60) 
+        button.setCursor(Qt.CursorShape.PointingHandCursor)
 
         #button actualizar
         button_actualizar = QPushButton("Actualizar",self)
         button_actualizar.setGeometry(int(self.width/2),self.y_buscador,60,35)
-        button_actualizar.setStyleSheet("font-size:15px;")
+        button_actualizar.setStyleSheet('''
+            QPushButton{
+                        font-size:15px;
+                        background-color:blue;
+                        color:#f1f1f1;
+                                      }
+            QPushButton:hover{
+                                      color:black;
+                                      }
+''')
         button_actualizar.setFixedWidth(100) 
+        button_actualizar.setCursor(Qt.CursorShape.PointingHandCursor)
 
         #table
         self.table = QTableWidget(self)  
@@ -69,7 +89,7 @@ class Inicio(QWidget):
     def buscar(self):
         input = self.buscador_input.text()
         if input == "" :
-            self.msj.setText("Debes de rellenar el campo")
+            self.msj.setText("Debes completar el campo")
             self.msj.setIcon(QMessageBox.Icon.Warning)
             self.msj.setWindowTitle("Seguros Atlanta")
             self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
@@ -84,9 +104,9 @@ class Inicio(QWidget):
                 poliza= valor
 
         if poliza == False:
-            self.msj.setText("No se pudo encontrar dicha poliza")
+            self.msj.setText("No se pudo encontrar dicha póliza")
             self.msj.setIcon(QMessageBox.Icon.Critical)
-            self.msj.setWindowTitle("Seguros atlanta")
+            self.msj.setWindowTitle("Seguros Atlanta")
             self.msj.exec()
             return
         

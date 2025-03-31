@@ -17,6 +17,7 @@ class Actualizar(QWidget):
         self.msj = QMessageBox(self)
         self.padre = padre
         self.poliza = False
+
         #variables
         titulo = QLabel("Actualizar Seguro",self)
         titulo.setStyleSheet("font-size:25px;")
@@ -24,10 +25,30 @@ class Actualizar(QWidget):
 
         button=QPushButton("Aceptar",self)
         button.setFixedSize(100,40)
-        button.setStyleSheet("font-size:15px")
+        button.setStyleSheet('''
+            QPushButton{
+                        font-size:15px;
+                        background-color:blue;
+                        color:#f1f1f1;
+                                      }
+            QPushButton:hover{
+                                      color:black;
+                                      }
+''')
+        button.setCursor(Qt.CursorShape.PointingHandCursor)
         btn_buscador = QPushButton("Buscar",self)
-        btn_buscador.setStyleSheet("font-size:15px")
+        btn_buscador.setStyleSheet('''
+            QPushButton{
+                        font-size:15px;
+                        background-color:blue;
+                        color:#f1f1f1;
+                                      }
+            QPushButton:hover{
+                                      color:black;
+                                      }
+''')
         btn_buscador.setFixedSize(60,30)
+        btn_buscador.setCursor(Qt.CursorShape.PointingHandCursor)
         
         #labels
         label_nombre_apellido   =QLabel(self.padre.heads[0]+":",self)
@@ -57,7 +78,8 @@ label_no_poliza         ]
         input_no_poliza         = QLineEdit(self)
         self.input_buscador     = QLineEdit(self) 
         self.input_buscador.setFixedSize(250,25)
-        self.input_buscador.setPlaceholderText("Ingrese en DNI")
+        self.input_buscador.setPlaceholderText("Ingrese el DNI")
+        self.input_buscador.setStyleSheet("background-color:#f1f1f1")
         self.inputs = [input_nombre_apellido,   
 input_fecha_nacimiento,  
 input_cedula      ,      
@@ -129,7 +151,7 @@ input_no_poliza
 
     def  actualizar(self):
         if self.poliza == False:
-            self.msj.setText("Busca la poliza que deseas actualizar")
+            self.msj.setText("Busca la póliza que deseas actualizar")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
             self.msj.setWindowTitle("Error")
@@ -144,7 +166,7 @@ input_no_poliza
         self.padre.valores.insert(self.poliza["index"],new_poliza)
         self.padre.save(self.padre.convert_to_docx())
         self.poliza = False
-        self.msj.setText("Actulizado correctamente")
+        self.msj.setText("Actualizado correctamente")
         self.msj.setIcon(QMessageBox.Icon.NoIcon)
         self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
         self.msj.setWindowTitle("Ok")
@@ -153,10 +175,10 @@ input_no_poliza
     def buscar(self):
 
         if self.input_buscador == "":
-            self.msj.setText("Introdusca un DNI")
+            self.msj.setText("Introduzca un DNI")
             self.msj.setIcon(QMessageBox.Icon.Information)
             self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
-            self.msj.setWindowTitle("Informacion")
+            self.msj.setWindowTitle("Información")
             self.msj.exec()
             return
         bandera = False
@@ -171,7 +193,7 @@ input_no_poliza
                         
         
         if bandera == False:
-            self.msj.setText("No se pudo encontrar dicha poliza")
+            self.msj.setText("No se pudo encontrar dicha póliza")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
             self.msj.setWindowTitle("Error")
