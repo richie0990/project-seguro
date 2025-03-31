@@ -2,11 +2,31 @@ import sys
 from PyQt6.QtWidgets import  QApplication,QWidget,QLabel,QVBoxLayout,QMessageBox,QMenuBar
 from PyQt6.QtGui import QAction,QPixmap,QIcon
 from PyQt6.QtCore import Qt
-
+from docx import Document
+from docx.oxml import OxmlElement
+import os
 from inicio import Inicio
 from agregar import Agregar
 from eliminar import Eliminar
 from actualizar import Actualizar
+
+doc = Document("./src/seguros.docx")
+data = []
+heads = []
+for tabla in doc.tables:
+    for d,fila in enumerate(tabla.rows):
+        obj ={}
+        index=0
+        datos=False
+        for i,celda in enumerate(fila.cells):
+            if d == 0:
+                heads.append(celda.text) 
+            else:
+                datos=True
+                obj[heads[i]] = celda.text     
+        if datos == True:   
+            data.append(obj)
+
 
 class Ventana(QWidget):
     def __init__(self):
@@ -17,11 +37,8 @@ class Ventana(QWidget):
         self.setFixedSize(self.width, self.height)
         self.setWindowIcon(QIcon("./src/img/favicon.ico"))
         self.setWindowTitle("Seguros atlanta")
-        self.valores = [
-            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-9","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"},
-            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-5","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"},
-            {"nombre":"richie","fecha de nac.":"05/5/1996","cedula":"4-52020120-9","telefono":"809-999-5555","fecha de inicio":"05/3/2025","fecha de venc.":"20/2/2025","no. poliza":"892221132555"}
-            ]
+        self.heads = heads
+        self.valores = data
         self.start_window = Inicio(self)
         self.eliminar_window =  Eliminar(self)
         self.agregar_window = Agregar(self)
@@ -132,7 +149,29 @@ class Ventana(QWidget):
             self.actualizar_window= Actualizar(self)
             self.option["ventana"]=self.actualizar_window
         
+    def save(self,data):
+        tables = doc.tables
+        if tables:
+            table_to_remove = tables[0]
+            tbl = table_to_remove._element  # Accedemos al elemento XML de la tabla
+            tbl.getparent().remove(tbl) 
+        tabla = doc.add_table(rows=len(data),cols=7)
+        tabla.style = 'Table Grid'
+        for i, fila in enumerate(data):
+            for j, valor in enumerate(fila):
+                # Acceder a cada celda y asignar el valor
+                tabla.cell(i, j).text = valor
+        
+        # Guardar el documento
+        doc.save("./src/seguros.docx")
+        #solo hay que poner donde el quiere que se guarde la informacion 
+        #doc.save(os.)
 
+    def convert_to_docx(self):
+        converted_data=[self.heads]
+        for valor in self.valores:
+            converted_data.append(list(valor.values()))
+        return converted_data 
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

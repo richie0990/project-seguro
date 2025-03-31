@@ -66,9 +66,12 @@ class Eliminar(QWidget):
             self.msj.setWindowTitle("Error")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.exec()
+            return
+        poliza=False
         for i,element in enumerate(self.padre.valores):
-            if element['cedula'] == value:
+            if element[self.padre.heads[2]] == value:
                 poliza = [i,element]
+            
         if poliza == False:
             self.msj.setText("No se encontro dicha poliza")
             self.msj.setWindowTitle("Error")
@@ -76,13 +79,13 @@ class Eliminar(QWidget):
             self.msj.exec()
             return
         self.table.setRowCount(1)
-        self.table.setItem(0,0,QTableWidgetItem(poliza[1]["nombre"]))
-        self.table.setItem(0,1,QTableWidgetItem(poliza[1]["fecha de nac."]))
-        self.table.setItem(0,2,QTableWidgetItem(poliza[1]["cedula"]))
-        self.table.setItem(0,3,QTableWidgetItem(poliza[1]["telefono"]))
-        self.table.setItem(0,4,QTableWidgetItem(poliza[1]["fecha de inicio"]))
-        self.table.setItem(0,5,QTableWidgetItem(poliza[1]["fecha de venc."]))
-        self.table.setItem(0,6,QTableWidgetItem(poliza[1]["no. poliza"]))
+        self.table.setItem(0,0,QTableWidgetItem(poliza[1][self.padre.heads[0]]))
+        self.table.setItem(0,1,QTableWidgetItem(poliza[1][self.padre.heads[1]]))
+        self.table.setItem(0,2,QTableWidgetItem(poliza[1][self.padre.heads[2]]))
+        self.table.setItem(0,3,QTableWidgetItem(poliza[1][self.padre.heads[3]]))
+        self.table.setItem(0,4,QTableWidgetItem(poliza[1][self.padre.heads[4]]))
+        self.table.setItem(0,5,QTableWidgetItem(poliza[1][self.padre.heads[5]]))
+        self.table.setItem(0,6,QTableWidgetItem(poliza[1][self.padre.heads[6]]))
         self.poliza =poliza
     def eliminar(self):
             if self.poliza == None:
@@ -100,6 +103,7 @@ class Eliminar(QWidget):
             if respuesta == QMessageBox.StandardButton.Cancel:
                  return
             del self.padre.valores[self.poliza[0]]
+            self.padre.save(self.padre.convert_to_docx())
             self.table.setRowCount(0)
             self.msj.setText("Eliminado correctamente")
             self.msj.setWindowTitle("Ok")

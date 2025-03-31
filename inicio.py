@@ -78,10 +78,10 @@ class Inicio(QWidget):
             return
         poliza = False
         for i,valor in enumerate(self.valores):
-            if valor["cedula"] == input:
-                poliza = self.valores[i]
-            elif valor["fecha de inicio"] == input:
-                poliza= self.valores[i]
+            if valor[self.padre.heads[2]] == input:
+                poliza = valor
+            elif valor[self.padre.heads[4]] == input:
+                poliza= valor
 
         if poliza == False:
             self.msj.setText("No se pudo encontrar dicha poliza")
@@ -92,20 +92,20 @@ class Inicio(QWidget):
         
         self.table.clearContents() 
         self.table.setRowCount(1)
-        self.table.setItem(0,0,QTableWidgetItem(poliza["nombre"]))
-        self.table.setItem(0,1,QTableWidgetItem(poliza["fecha de nac."]))
-        self.table.setItem(0,2,QTableWidgetItem(poliza["cedula"]))
-        self.table.setItem(0,3,QTableWidgetItem(poliza["telefono"]))
-        self.table.setItem(0,4,QTableWidgetItem(poliza["fecha de inicio"]))
-        self.table.setItem(0,5,QTableWidgetItem(poliza["fecha de venc."]))
-        self.table.setItem(0,6,QTableWidgetItem(poliza["no. poliza"]))
+        self.table.setItem(0,0,QTableWidgetItem(poliza[self.padre.heads[0]]))
+        self.table.setItem(0,1,QTableWidgetItem(poliza[self.padre.heads[1]]))
+        self.table.setItem(0,2,QTableWidgetItem(poliza[self.padre.heads[2]]))
+        self.table.setItem(0,3,QTableWidgetItem(poliza[self.padre.heads[3]]))
+        self.table.setItem(0,4,QTableWidgetItem(poliza[self.padre.heads[4]]))
+        self.table.setItem(0,5,QTableWidgetItem(poliza[self.padre.heads[5]]))
+        self.table.setItem(0,6,QTableWidgetItem(poliza[self.padre.heads[6]]))
 
 
     def actulizar(self):
         self.table.clearContents() 
         self.table.setRowCount(len(self.valores))
         self.table.setColumnCount(7)
-        self.table.setHorizontalHeaderLabels(["Nombre","Fecha de Nac.","Cedula","Telefono","Fecha de inicio","Fecha de Venc.","No. poliza"])
+        self.table.setHorizontalHeaderLabels(self.padre.heads)
         self.table.setColumnWidth(0, int((self.width+15)/7))
         self.table.setColumnWidth(1, int((self.width+15)/7))
         self.table.setColumnWidth(2, int((self.width+15)/7))
@@ -117,13 +117,13 @@ class Inicio(QWidget):
         #bucle parea anadir los item
         item=0
         for i,key in enumerate(self.valores) :
-            item_1=QTableWidgetItem(key["nombre"])
-            item_2=QTableWidgetItem(key["fecha de nac."])
-            item_3=QTableWidgetItem(key["cedula"])
-            item_4=QTableWidgetItem(key["telefono"])
-            item_5=QTableWidgetItem(key["fecha de inicio"])
-            item_6=QTableWidgetItem(key["fecha de venc."])
-            item_7=QTableWidgetItem(key["no. poliza"])
+            item_1=QTableWidgetItem(key[self.padre.heads[0]])
+            item_2=QTableWidgetItem(key[self.padre.heads[1]])
+            item_3=QTableWidgetItem(key[self.padre.heads[2]])
+            item_4=QTableWidgetItem(key[self.padre.heads[3]])
+            item_5=QTableWidgetItem(key[self.padre.heads[4]])
+            item_6=QTableWidgetItem(key[self.padre.heads[5]])
+            item_7=QTableWidgetItem(key[self.padre.heads[6]])
             self.table.setItem(i,item,item_1)
             self.table.setItem(i,item+1,item_2)
             self.table.setItem(i,item+2,item_3)

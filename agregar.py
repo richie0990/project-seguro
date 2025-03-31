@@ -26,13 +26,13 @@ class Agregar(QWidget):
         button.setStyleSheet("font-size:15px")
         
         #labels
-        label_nombre_apellido   =QLabel("Nombre y apellido:",self)
-        label_fecha_nacimiento  =QLabel("Fecha de nacimiento:",self)
-        label_cedula            =QLabel("Cédula:",self)
-        label_telefono          =QLabel("Teléfono:",self)
-        label_fecha_inicio      =QLabel("Fecha de inicio:",self)
-        label_fecha_vencimiento =QLabel("Fecha de vencimineto:",self)
-        label_no_poliza         =QLabel("Número de poliza:",self)
+        label_nombre_apellido   =QLabel(self.padre.heads[0]+":",self)
+        label_fecha_nacimiento  =QLabel(self.padre.heads[1]+":",self)
+        label_cedula            =QLabel(self.padre.heads[2]+":",self)
+        label_telefono          =QLabel(self.padre.heads[3]+":",self)
+        label_fecha_inicio      =QLabel(self.padre.heads[4]+":",self)
+        label_fecha_vencimiento =QLabel(self.padre.heads[5]+":",self)
+        label_no_poliza         =QLabel(self.padre.heads[6]+":",self)
         self.labels = [label_nombre_apellido,   
 label_fecha_nacimiento,  
 label_cedula,            
@@ -127,7 +127,7 @@ input_no_poliza
             return
         exits =False
         for valor in self.padre.valores:
-            if valor["cedula"] == obj["cedula"] or valor["no. poliza"] == obj["no. poliza"]:
+            if valor[self.padre.heads[2]] == obj[self.padre.heads[2]] or valor[self.padre.heads[6]] == obj[self.padre.heads[6]]:
                 exits =True
         if exits == True:
             self.msj.setWindowTitle("Error")
@@ -137,6 +137,7 @@ input_no_poliza
             self.msj.exec()
             return
         self.padre.valores.insert(0,obj)
+        self.padre.save(self.padre.convert_to_docx())
         for input in self.inputs:
             input.setText("")
         self.msj.setWindowTitle("Ok")

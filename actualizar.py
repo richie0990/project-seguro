@@ -30,13 +30,13 @@ class Actualizar(QWidget):
         btn_buscador.setFixedSize(60,30)
         
         #labels
-        label_nombre_apellido   =QLabel("Nombre y apellido:",self)
-        label_fecha_nacimiento  =QLabel("Fecha de nacimiento:",self)
-        label_cedula            =QLabel("Cédula:",self)
-        label_telefono          =QLabel("Teléfono:",self)
-        label_fecha_inicio      =QLabel("Fecha de inicio:",self)
-        label_fecha_vencimiento =QLabel("Fecha de vencimineto:",self)
-        label_no_poliza         =QLabel("Número de poliza:",self)
+        label_nombre_apellido   =QLabel(self.padre.heads[0]+":",self)
+        label_fecha_nacimiento  =QLabel(self.padre.heads[1]+":",self)
+        label_cedula            =QLabel(self.padre.heads[2]+":",self)
+        label_telefono          =QLabel(self.padre.heads[3]+":",self)
+        label_fecha_inicio      =QLabel(self.padre.heads[4]+":",self)
+        label_fecha_vencimiento =QLabel(self.padre.heads[5]+":",self)
+        label_no_poliza         =QLabel(self.padre.heads[6]+":",self)
         label_buscador          =QLabel("Buscador",self)
         label_buscador.setStyleSheet("font-size:15px")
         self.labels = [label_nombre_apellido,   
@@ -142,6 +142,7 @@ input_no_poliza
             input.setText("")
         del self.padre.valores[self.poliza["index"]]
         self.padre.valores.insert(self.poliza["index"],new_poliza)
+        self.padre.save(self.padre.convert_to_docx())
         self.poliza = False
         self.msj.setText("Actulizado correctamente")
         self.msj.setIcon(QMessageBox.Icon.NoIcon)
@@ -161,7 +162,7 @@ input_no_poliza
         bandera = False
        
         for i,poliza in enumerate(self.padre.valores):
-            if poliza["cedula"] == self.input_buscador.text():
+            if poliza[self.padre.heads[2]] == self.input_buscador.text():
                 bandera = True
                 self.poliza = {"index":i,"poliza":poliza}
                 polizas = list(poliza.keys())
