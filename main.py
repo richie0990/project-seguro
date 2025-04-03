@@ -11,7 +11,7 @@ from agregar import Agregar
 from eliminar import Eliminar
 import re
 from actualizar import Actualizar
-import datetime
+from openpyxl import load_workbook
 
 #crear ruta si no existe 
 escritorio= os.path.join(os.path.expanduser("~"),"Desktop")
@@ -199,7 +199,27 @@ class Ventana(QWidget):
         #print(data)
         df = pd.DataFrame(data)
         df.to_excel(archivo,index=False)
- 
+        # Cargar el archivo Excel con openpyxl
+        wb = load_workbook(archivo)
+        ws = wb.active
+
+        # Ajustar el tamaño de las columnas para que se ajusten al contenido de las celdas
+        for col in ws.columns:
+            max_length = 0
+            column = col[0].column_letter  # Obtener la letra de la columna
+
+            for cell in col:
+                try:
+                    if len(str(cell.value)) > max_length:
+                        max_length = len(cell.value)  # Encontrar el valor más largo
+                except:
+                    pass
+                
+            adjusted_width = (max_length + 2)  # Ajustar un poco el tamaño (puedes cambiar el número)
+            ws.column_dimensions[column].width = adjusted_width
+
+        # Guardar el archivo de Excel con los tamaños ajustados
+        wb.save(archivo)
     def convert_to_excel(self):
         converted_data  = {}
         for head in self.heads:
