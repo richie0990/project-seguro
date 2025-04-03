@@ -9,7 +9,6 @@ class Inicio(QWidget):
         super().__init__()
         self.width=1000
         self.height=500
-        self.setGeometry(10,200,self.width,self.height)
         self.padre = padre
 
         #variables
@@ -94,13 +93,13 @@ class Inicio(QWidget):
             self.msj.setWindowTitle("Seguros Atlanta")
             self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
             self.msj.exec()
-            
+            self.buscador_input.setFocus()
             return
         poliza = False
         for i,valor in enumerate(self.valores):
-            if valor[self.padre.heads[2]] == input:
+            if valor[self.padre.heads[3]] == input:
                 poliza = valor
-            elif valor[self.padre.heads[4]] == input:
+            elif str(valor[self.padre.heads[4]]) == input:
                 poliza= valor
 
         if poliza == False:
@@ -112,42 +111,26 @@ class Inicio(QWidget):
         
         self.table.clearContents() 
         self.table.setRowCount(1)
-        self.table.setItem(0,0,QTableWidgetItem(poliza[self.padre.heads[0]]))
-        self.table.setItem(0,1,QTableWidgetItem(poliza[self.padre.heads[1]]))
-        self.table.setItem(0,2,QTableWidgetItem(poliza[self.padre.heads[2]]))
-        self.table.setItem(0,3,QTableWidgetItem(poliza[self.padre.heads[3]]))
-        self.table.setItem(0,4,QTableWidgetItem(poliza[self.padre.heads[4]]))
-        self.table.setItem(0,5,QTableWidgetItem(poliza[self.padre.heads[5]]))
-        self.table.setItem(0,6,QTableWidgetItem(poliza[self.padre.heads[6]]))
+        for x,valor in enumerate(self.valores) :
+            
+            for y,keys in enumerate(self.padre.heads):
+        
+                item=QTableWidgetItem(str(valor[keys]))
+                self.table.setItem(x,y,item)
 
 
     def actulizar(self):
         self.table.clearContents() 
         self.table.setRowCount(len(self.valores))
-        self.table.setColumnCount(7)
+        self.table.setColumnCount(len(self.padre.heads))
         self.table.setHorizontalHeaderLabels(self.padre.heads)
-        self.table.setColumnWidth(0, int((self.width+15)/7))
-        self.table.setColumnWidth(1, int((self.width+15)/7))
-        self.table.setColumnWidth(2, int((self.width+15)/7))
-        self.table.setColumnWidth(3, int((self.width+15)/7))
-        self.table.setColumnWidth(4, int((self.width+15)/7))
-        self.table.setColumnWidth(5, int((self.width+15)/7))
-        self.table.setColumnWidth(6, int((self.width+15)/7))
-        
-        #bucle parea anadir los item
-        item=0
-        for i,key in enumerate(self.valores) :
-            item_1=QTableWidgetItem(key[self.padre.heads[0]])
-            item_2=QTableWidgetItem(key[self.padre.heads[1]])
-            item_3=QTableWidgetItem(key[self.padre.heads[2]])
-            item_4=QTableWidgetItem(key[self.padre.heads[3]])
-            item_5=QTableWidgetItem(key[self.padre.heads[4]])
-            item_6=QTableWidgetItem(key[self.padre.heads[5]])
-            item_7=QTableWidgetItem(key[self.padre.heads[6]])
-            self.table.setItem(i,item,item_1)
-            self.table.setItem(i,item+1,item_2)
-            self.table.setItem(i,item+2,item_3)
-            self.table.setItem(i,item+3,item_4)
-            self.table.setItem(i,item+4,item_5)
-            self.table.setItem(i,item+5,item_6)
-            self.table.setItem(i,item+6,item_7)
+        self.table.resizeColumnsToContents()
+
+        for i,key in enumerate(self.padre.heads):
+     
+            for x,valor in enumerate(self.valores) :
+                
+                for y,keys in enumerate(self.padre.heads):
+            
+                    item=QTableWidgetItem(str(valor[keys]))
+                    self.table.setItem(x,y,item)

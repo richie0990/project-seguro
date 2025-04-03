@@ -61,16 +61,11 @@ class Eliminar(QWidget):
         self.layout_.setAlignment(titulo,Qt.AlignmentFlag.AlignCenter)
         self.table = QTableWidget(self)
         self.table.setStyleSheet("font-size:15px")
-        self.table.setColumnCount(7)
         self.table.setRowCount(0)
+        self.table.setColumnCount(len(self.padre.heads))
         self.table.setHorizontalHeaderLabels(self.padre.heads)
-        self.table.setColumnWidth(0, int((self.width+15)/7))
-        self.table.setColumnWidth(1, int((self.width+15)/7))
-        self.table.setColumnWidth(2, int((self.width+15)/7))
-        self.table.setColumnWidth(3, int((self.width+15)/7))
-        self.table.setColumnWidth(4, int((self.width+15)/7))
-        self.table.setColumnWidth(5, int((self.width+15)/7))
-        self.table.setColumnWidth(6, int((self.width+15)/7))
+        self.table.resizeColumnsToContents()
+        self.table.setHorizontalHeaderLabels(self.padre.heads)
         self.layout_.addWidget(self.table)
         self.layout_.addWidget(eliminar_button)
         self.layout_.setAlignment(eliminar_button,Qt.AlignmentFlag.AlignCenter)
@@ -90,7 +85,7 @@ class Eliminar(QWidget):
             return
         poliza=False
         for i,element in enumerate(self.padre.valores):
-            if element[self.padre.heads[2]] == value:
+            if element[self.padre.heads[3]] == value:
                 poliza = [i,element]
             
         if poliza == False:
@@ -100,13 +95,10 @@ class Eliminar(QWidget):
             self.msj.exec()
             return
         self.table.setRowCount(1)
-        self.table.setItem(0,0,QTableWidgetItem(poliza[1][self.padre.heads[0]]))
-        self.table.setItem(0,1,QTableWidgetItem(poliza[1][self.padre.heads[1]]))
-        self.table.setItem(0,2,QTableWidgetItem(poliza[1][self.padre.heads[2]]))
-        self.table.setItem(0,3,QTableWidgetItem(poliza[1][self.padre.heads[3]]))
-        self.table.setItem(0,4,QTableWidgetItem(poliza[1][self.padre.heads[4]]))
-        self.table.setItem(0,5,QTableWidgetItem(poliza[1][self.padre.heads[5]]))
-        self.table.setItem(0,6,QTableWidgetItem(poliza[1][self.padre.heads[6]]))
+        
+        for i,keys in enumerate(self.padre.heads):
+             print(poliza[1][self.padre.heads[i]])
+             self.table.setItem(0,i,QTableWidgetItem(str(poliza[1][self.padre.heads[i]])))
         self.poliza =poliza
         
     def eliminar(self):
@@ -125,7 +117,7 @@ class Eliminar(QWidget):
             if respuesta == QMessageBox.StandardButton.Cancel:
                  return
             del self.padre.valores[self.poliza[0]]
-            self.padre.save(self.padre.convert_to_docx())
+            self.padre.save_excel(self.padre.convert_to_excel())
             self.table.setRowCount(0)
             self.msj.setText("Eliminado correctamente")
             self.msj.setWindowTitle("Ok")

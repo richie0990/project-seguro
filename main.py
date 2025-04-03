@@ -1,39 +1,62 @@
+import os.path
 import sys 
 from PyQt6.QtWidgets import  QApplication,QWidget,QLabel,QVBoxLayout,QMessageBox,QMenuBar
 from PyQt6.QtGui import QAction,QPixmap,QIcon
 from PyQt6.QtCore import Qt
 from docx import Document
+import pandas as pd
+import os
 from inicio import Inicio
 from agregar import Agregar
 from eliminar import Eliminar
+import re
 from actualizar import Actualizar
+import datetime
 
+#crear ruta si no existe 
+escritorio= os.path.join(os.path.expanduser("~"),"Desktop")
+if os.path.exists(escritorio):
+    escritorio= os.path.join(os.path.expanduser("~"),"Desktop")
+else:
+    escritorio= os.path.join(os.path.expanduser("~"),"Escritorio")
+path =os.path.isdir(os.path.join(escritorio,"Seguros Atlanta"))
+if path :
+    ""
+else:
+    os.mkdir(os.path.join(escritorio,"Seguros Atlanta"))
+    
 
-doc = Document("./src/seguros.docx")
+doc = Document(os.path.join(escritorio,"Seguros Atlanta/Seguros.docx"))
+path = os.path.join(escritorio,"Seguros Atlanta""/HOJA DE SEGURO ATLANTICA.xlsx")
+data_execl = pd.read_excel(path,sheet_name="Hoja1")
+heads = list(data_execl)
 data = []
-heads = []
+j=0
 
-for tabla in doc.tables:
-    for d,fila in enumerate(tabla.rows):
-        obj ={}
-        datos=False
-        for i,celda in enumerate(fila.cells):
-            if d == 0:
-                heads.append(celda.text) 
-            else:
-                datos=True
-                obj[heads[i]] = celda.text     
-        if datos == True:   
-            data.append(obj)
+filas, columnas = data_execl.shape
+for i in range(filas):
+    data.append({})
 
+for sheet_name, df in data_execl.items():   
+    for i,valor in enumerate(list(df)):
+        
+        if not re.match(r"^nan$",str(valor)):
+            if re.match(r"^FECHA",str(sheet_name)):
+                date = pd.to_datetime(valor,dayfirst=True)
+                time = date.strftime('%d/%m/%Y')
+                valor= time       
+        data[i][heads[j]] = valor
+    if j>= len(heads):
+        j=0
+    else:
+        j+=1
 
 class Ventana(QWidget):
     def __init__(self):
         super().__init__()
-        self.width =1080
+        self.width =600
         self.height =580
-        self.setGeometry(0,100,self.width,self.height)
-        self.setFixedSize(self.width, self.height)
+        self.setGeometry(int(self.height-(self.height/2)),int(self.width-(self.width/2)),self.width,self.height)
         self.setWindowIcon(QIcon("./src/img/favicon.ico"))
         self.setWindowTitle("Seguros Atlanta")
         self.heads = heads
@@ -42,6 +65,9 @@ class Ventana(QWidget):
         self.eliminar_window =  Eliminar(self)
         self.agregar_window = Agregar(self)
         self.agregar_window = Actualizar(self)
+        self.re_fechas =    r'^\d{1,2}/\d{1,2}/\d{4}$'
+        self.re_cedula =    r'^\d{3}-\d{7}-\d{1}$'
+        self.re_telefono =  r'^\d{3}-\d{3}-\d{4}$'
         self.option={
             "current":"inicio",
             "ventana":self.start_window
@@ -149,34 +175,49 @@ class Ventana(QWidget):
             self.option["ventana"]=self.actualizar_window
         
         
-    def save(self,data):
+    def save_word(self,data):
+        
+        archivo =   os.path.join(escritorio,"Seguros Atlanta/Seguros.docx")
         tables = doc.tables
         if tables:
             table_to_remove = tables[0]
             tbl = table_to_remove._element  # Accedemos al elemento XML de la tabla
             tbl.getparent().remove(tbl) 
         tabla = doc.add_table(rows=len(data),cols=7)
+
         tabla.style = 'Table Grid'
         for i, fila in enumerate(data):
             for j, valor in enumerate(fila):
                 # Acceder a cada celda y asignar el valor
                 tabla.cell(i, j).text = valor
-        
         # Guardar el documento
-        doc.save("./src/seguros.docx")
+       
+        doc.save(archivo)
         #solo hay que poner donde el quiere que se guarde la informacion 
-        
-    def convert_to_docx(self):
-        converted_data=[self.heads]
-        for valor in self.valores:
-            converted_data.append(list(valor.values()))
+    def save_excel(self,data):
+        archivo =   os.path.join(escritorio,"Seguros Atlanta/pruva.xlsx")
+        #print(data)
+        df = pd.DataFrame(data)
+        df.to_excel(archivo,index=False)
+ 
+    def convert_to_excel(self):
+        converted_data  = {}
+        for head in self.heads:
+            converted_data[head] = []
+        #####AQui me quede hay que probar los datos de que s epuedan convertir en execl data.
+
+        for i,valor_obj in enumerate(self.valores):
+            
+            for j,valor in enumerate(list(valor_obj.values())):
+                
+                converted_data[self.heads[j]].append(valor)
         return converted_data 
-
+                 
 if __name__ == "__main__":
+    
     app = QApplication(sys.argv)
-
     mi_ventana= Ventana()
-    mi_ventana.show()
+    mi_ventana.showFullScreen()
     sys.exit(app.exec())
 
 
