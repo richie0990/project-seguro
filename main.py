@@ -195,7 +195,7 @@ class Ventana(QWidget):
         doc.save(archivo)
         #solo hay que poner donde el quiere que se guarde la informacion 
     def save_excel(self,data):
-        archivo =   os.path.join(escritorio,"Seguros Atlanta/pruva.xlsx")
+        archivo =   os.path.join(escritorio,"Seguros Atlanta/prueba.xlsx")
         #print(data)
         df = pd.DataFrame(data)
         df.to_excel(archivo,index=False)

@@ -6,6 +6,7 @@ class Actualizar(QWidget):
     def __init__(self,padre):
         super().__init__()
         self.setGeometry(0,0,500,300)
+        self.check_input = True
         self.layout_main = QVBoxLayout(self)
         self.layout_w = QHBoxLayout(self)
         self.layout_p = QVBoxLayout(self)
@@ -116,7 +117,7 @@ label_pago_restante            ]
         input_fecha_de_pago.setPlaceholderText("dd/mm/aaaa" )      
         input_pago_total.setPlaceholderText("Pago total")         
         input_pago_restante.setPlaceholderText("Pago restante")      
-       
+        input_pago_total.textChanged.connect(self.resta)
         self.input_buscador.setFixedSize(250,25)
         self.input_buscador.setPlaceholderText("Ingrese el DNI")
         self.input_buscador.setStyleSheet("background-color:#f1f1f1")
@@ -289,6 +290,7 @@ input_pago_restante
         polizas = list(self.padre.valores[0].keys())
         for i,input in enumerate(self.inputs):
             new_poliza[polizas[i]] = input.text()
+            self.check_input = False
             input.setText("")
         del self.padre.valores[self.poliza["index"]]
         self.padre.valores.insert(self.poliza["index"],new_poliza)
@@ -327,5 +329,26 @@ input_pago_restante
             self.msj.setWindowTitle("Error")
             self.msj.exec()
             return
+    
+        
+    def resta(self):
+        if self.check_input: 
+            try:
+                poliza_total = int(self.inputs[8].text())
+                total_pago  = int(self.inputs[10].text())
+            except:
+                self.msj.setWindowTitle("Error")
+                self.msj.setIcon(QMessageBox.Icon.Critical)
+                self.msj.setStandardButtons(QMessageBox.StandardButton.Ok)
+                self.msj.setText(f"Por favor ingrese números enteros en los campos {self.padre.heads[8]} y {self.padre.heads[10]}")
+                self.msj.exec()
+                return
+
+            total = poliza_total - total_pago
+            self.inputs[11].setText(str(total))
+        else:
+            self.check_input = True
+
+
 
         
