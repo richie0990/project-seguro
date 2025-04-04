@@ -28,7 +28,7 @@ else:
 
 doc = Document(os.path.join(escritorio,"Seguros Atlanta/Seguros.docx"))
 path = os.path.join(escritorio,"Seguros Atlanta""/HOJA DE SEGURO ATLANTICA.xlsx")
-data_execl = pd.read_excel(path,sheet_name="Hoja1")
+data_execl = pd.read_excel(path,sheet_name="Sheet1")
 heads = list(data_execl)
 data = []
 j=0
@@ -195,7 +195,7 @@ class Ventana(QWidget):
         doc.save(archivo)
         #solo hay que poner donde el quiere que se guarde la informacion 
     def save_excel(self,data):
-        archivo =   os.path.join(escritorio,"Seguros Atlanta/prueba.xlsx")
+        archivo =   os.path.join(escritorio,"Seguros Atlanta/HOJA DE SEGURO ATLANTICA.xlsx")
         #print(data)
         df = pd.DataFrame(data)
         df.to_excel(archivo,index=False)

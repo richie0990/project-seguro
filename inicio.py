@@ -95,14 +95,14 @@ class Inicio(QWidget):
             self.msj.exec()
             self.buscador_input.setFocus()
             return
-        poliza = False
+        poliza = []
         for i,valor in enumerate(self.valores):
             if valor[self.padre.heads[3]] == input:
-                poliza = valor
+                poliza.append(valor)
             elif str(valor[self.padre.heads[4]]) == input:
-                poliza= valor
+                poliza.append(valor)
 
-        if poliza == False:
+        if poliza == False or len(poliza) == 0:
             self.msj.setText("No se pudo encontrar dicha póliza")
             self.msj.setIcon(QMessageBox.Icon.Critical)
             self.msj.setWindowTitle("Seguros Atlanta")
@@ -110,8 +110,8 @@ class Inicio(QWidget):
             return
         
         self.table.clearContents() 
-        self.table.setRowCount(1)
-        for x,valor in enumerate(self.valores) :
+        self.table.setRowCount(len(poliza))
+        for x,valor in enumerate(poliza):
             
             for y,keys in enumerate(self.padre.heads):
         
